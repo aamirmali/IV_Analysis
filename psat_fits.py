@@ -12,9 +12,15 @@ from scipy.optimize import leastsq
 parser = argparse.ArgumentParser(description='arguments')
 parser.add_argument('filename', type=str, help='filename of sorted temp/psat data')
 parser.add_argument('--file_directory', type=str, default='/data/cryo/current_data/', help = 'file directory')
+# cols argument helps make sure we get our labels right. if total number doesn't agree with number of columns from data file then you'll get mislabling
+parser.add_argument('--cols', nargs='+', type = int, help='list of columns to run on. total number should agree with numbers of columns  from data file')
+# default = 0 1 2 3 4 5 6 7 8, help='list columns to run on')
+parser.add_argument('--num_rows', type = int, default = 22, help='number of rows. default 22')
 
 args = parser.parse_args()
 filename = args.filename
+cols = args.cols
+num_rows = args.num_rows
 
 
 #load psat data
@@ -50,8 +56,13 @@ def g(K,Tc):
 
 p0 = [1500,150]
 
-# create array to define row column labeling
- 
+# create list to define row column labeling
+labels = []
+for i in cols:
+    for j in xrange(num_rows):
+        labels.append('C%sR%s' % (i,j))
+
+print 'labels', labels
 
 
 # populate array with fit params 
@@ -61,16 +72,16 @@ for i in np.arange(np.size(data[0,:])-1):
     if np.size(where_good) > 2:
         P_sat = P_sat[where_good]
         T_bath = temp[where_good]
-        print 'size P_sat', np.size(P_sat)
-        print 'size T_bath', np.size(T_bath)
+        #print 'size P_sat', np.size(P_sat)
+        #print 'size T_bath', np.size(T_bath)
         fit = leastsq(residuals, p0, args=(P_sat,T_bath))
         fit_params = fit[0]
         x1 = fit_params[0]
         x2 = fit_params[1]
         G = g(x1,x2)
-        print 'G', G
-        print 'i', i
-        print 'fit params', fit[0]
+        #print 'G', G
+        data_slice = [i, labels[i-1], x1, x2]
+        print 'data_slice', data_slice
 
 
 
