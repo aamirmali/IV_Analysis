@@ -45,13 +45,16 @@ def residuals(p,y,x):
 def Psat(x,p):
     return p[0]*(p[1]**4. - x**4.)
 
-def G(K,Tc):
+def g(K,Tc):
     return 4.*K*(Tc**3.)
 
 p0 = [1500,150]
 
-# create array to hold params and G value 
+# create array to define row column labeling
  
+
+
+# populate array with fit params 
 for i in np.arange(np.size(data[0,:])-1):
     P_sat = data[:,i+1]
     where_good = np.where(P_sat>0)
@@ -61,6 +64,11 @@ for i in np.arange(np.size(data[0,:])-1):
         print 'size P_sat', np.size(P_sat)
         print 'size T_bath', np.size(T_bath)
         fit = leastsq(residuals, p0, args=(P_sat,T_bath))
+        fit_params = fit[0]
+        x1 = fit_params[0]
+        x2 = fit_params[1]
+        G = g(x1,x2)
+        print 'G', G
         print 'i', i
         print 'fit params', fit[0]
 
