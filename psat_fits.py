@@ -62,13 +62,13 @@ for i in cols:
 
 print 'labels', labels
 
-
+data_product = []
 # populate array with fit params 
 for i in np.arange(np.size(data[0,:])-1):
     P_sat = data[:,i+1]
     where_good = np.where(P_sat>0)
     if np.size(where_good) < 3:
-        data_slice = [i, labels[i-1], 0, 0]
+        data_slice = [i, labels[i], 0, 0]
     else:
         P_sat = P_sat[where_good]
         T_bath = temp[where_good]
@@ -81,10 +81,15 @@ for i in np.arange(np.size(data[0,:])-1):
         G = g(x1,x2)
         #print 'G', G
         if .05<x2<.3:
-            data_slice = [i, labels[i-1], x1, x2]
+            data_slice = [i, labels[i], x1, x2]
         else:
-            data_slice = [i, labels[i-1], 0, 0]
-    print 'data_slice', data_slice
+            data_slice = [i, labels[i], 0, 0]
+    #print 'data_slice', data_slice
+    data_product.append(data_slice)
 
+data_product = np.array(data_product)
+print 'shape', np.shape(data_product)
+print data_product
 
+np.savetxt('/data/cryo/20161205/psat_data_product.txt', data_product, fmt="%s")
 
