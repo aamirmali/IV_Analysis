@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from scipy.optimize import leastsq
 #adding test comment to check that versioning is making sense
 #changing it further to continue checking
-#oja
+#master
 
 
 parser = argparse.ArgumentParser(description='arguments')
