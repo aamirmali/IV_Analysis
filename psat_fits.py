@@ -5,9 +5,7 @@ import argparse
 import time
 import matplotlib.pyplot as plt
 from scipy.optimize import leastsq
-#adding test comment to check that versioning is making sense
-#changing it further to continue checking
-#oja
+
 
 parser = argparse.ArgumentParser(description='arguments')
 parser.add_argument('filename', type=str, help='filename of sorted temp/psat data')
@@ -69,7 +67,9 @@ print 'labels', labels
 for i in np.arange(np.size(data[0,:])-1):
     P_sat = data[:,i+1]
     where_good = np.where(P_sat>0)
-    if np.size(where_good) > 2:
+    if np.size(where_good) < 3:
+        data_slice = [i, labels[i-1], 0, 0]
+    else:
         P_sat = P_sat[where_good]
         T_bath = temp[where_good]
         #print 'size P_sat', np.size(P_sat)
@@ -80,8 +80,11 @@ for i in np.arange(np.size(data[0,:])-1):
         x2 = fit_params[1]
         G = g(x1,x2)
         #print 'G', G
-        data_slice = [i, labels[i-1], x1, x2]
-        print 'data_slice', data_slice
+        if .05<x2<.3:
+            data_slice = [i, labels[i-1], x1, x2]
+        else:
+            data_slice = [i, labels[i-1], 0, 0]
+    print 'data_slice', data_slice
 
 
 
